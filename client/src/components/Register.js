@@ -3,6 +3,10 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 function Register() {
+
+  // State for Register loading
+  const [loading, setLoading]=useState(false);
+
   const [state, setState] = useState({
     firstName: "",
     lastName: "",
@@ -29,6 +33,8 @@ function Register() {
     
     e.preventDefault();
 
+    setLoading(true);
+
     const {
       firstName,
       lastName,
@@ -53,73 +59,94 @@ function Register() {
       !rState ||
       !country
     ) {
+      setLoading(false);
       return toast.error("Please enter all required fields");
     }
 
-    // Regular Expression for all the required fields
+    // Regular Expression Patterns for all the required fields validations
     var firstNameRegex = /^[A-Za-z. ]{3,30}$/;
     var lastNameRegex = /^[a-zA-Z\s]{2,}$/;
     var emailRegex = /\S+@\S+\.\S+/;
-    var phoneRegex = /^[0-9]{10}$/;
+    var phoneRegex = /(0|91)?[6-9][0-9]{9}/;
     var addressRegex = /^[a-zA-Z0-9\s,'-]{3,30}$/;
     var zipRegex = /^[0-9]{6}$/;
     var cityStateCountryRegex = /^[a-zA-Z\s]{2,30}$/;
 
+    // Error array for storing all the errors
     var inputErrors = [];
 
+    // Check if the first name is valid
     if (!firstNameRegex.test(firstName)) {
-      inputErrors.push("firstName is invalid");
+      inputErrors.push("First Name is invalid");
     }
+    // Check if the last name is valid
     if (!lastNameRegex.test(lastName)) {
-      inputErrors.push("lastName is invalid");
+      inputErrors.push("Last Name is invalid");
     }
+    // Check if the phone number is valid
     if (!emailRegex.test(email)) {
-      inputErrors.push("email is invalid");
+      inputErrors.push("Email is invalid");
     }
+    // Check if the phone number is valid
     if (!phoneRegex.test(phoneNumber)) {
-      inputErrors.push("phoneNumber is invalid");
+      inputErrors.push("Phone Number is invalid");
     }
+    // Check if the address is valid
     if (!addressRegex.test(address)) {
-      inputErrors.push("address is invalid");
+      inputErrors.push("Address is invalid");
     }
+    // Check if the zip is valid
     if (!zipRegex.test(zip)) {
-      inputErrors.push("zip is invalid");
+      inputErrors.push("ZIP is invalid");
     }
+    // Check if the city is valid
     if (!cityStateCountryRegex.test(city)) {
-      inputErrors.push("city is invalid");
+      inputErrors.push("City is invalid");
     }
+    // Check if the state is valid
     if (!cityStateCountryRegex.test(rState)) {
-      inputErrors.push("state is invalid");
+      inputErrors.push("State is invalid");
     }
+    // Check if the country is valid
     if (!cityStateCountryRegex.test(country)) {
-      inputErrors.push("country is invalid");
+      inputErrors.push("Country is invalid");
     }
 
+    // If there are any errors, show the error message
     if (inputErrors.length > 0) {
       inputErrors.map((error) => {
         toast.error(error);
       });
       inputErrors = [];
+      setLoading(false);
       return;
     }
 
     try {
       const config = {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "Application/json",
         },
       };
-  
-      const {msg} =  await axios.post("/register", state, config);
-  
+
+      // Sending the data to the server
+      const {msg} =  await axios.post("http://127.0.0.1:5000/register", state, config);
+      
+      // State reset
       setState({
         firstName: "", lastName: "", phoneNumber: "", email: "", address: "", zip: "", city: "", rState: "", country: "",
       });
 
-      return toast.error(msg);
+      setLoading(false);
+
+      // Showing the success message
+      return toast.success("User Registered successfully");
     
     } catch (error) {
 
+      setLoading(false);
+
+      // Showing the error message
       return toast.error("User Not Registered");
     
     }
@@ -133,13 +160,13 @@ function Register() {
         reverseOrder={false}
         toastOptions={{
           style: {
-            fontSize: "14px",
+            fontSize: "20px",
           },
         }}
       />
       <form onSubmit={userRegister} className="form_container">
         <div className="heading_container">
-          <h1>Register</h1>
+          <h1>User Registration</h1>
         </div>
         <div className="group">
           <input
@@ -232,7 +259,7 @@ function Register() {
           />
         </div>
         <div className="group">
-          <input type="submit" className="btn btn-block" value="Register" />
+          <input type="submit" className="btn btn-block" value={loading?".....":"Register"} />
         </div>
       </form>
     </div>
