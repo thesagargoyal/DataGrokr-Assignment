@@ -3,9 +3,9 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 function Register() {
-
   // State for Register loading
-  const [loading, setLoading]=useState(false);
+  const [loading, setLoading] = useState(false);
+  const [medium, setMedium] = useState("NaN");
 
   const [state, setState] = useState({
     firstName: "",
@@ -29,8 +29,11 @@ function Register() {
     });
   };
 
+  const handleDropDown = (event) => {
+    setMedium(event.target.value);
+  };
+
   const userRegister = async (e) => {
-    
     e.preventDefault();
 
     setLoading(true);
@@ -130,27 +133,35 @@ function Register() {
       };
 
       // Sending the data to the server
-      const {msg} =  await axios.post("http://127.0.0.1:5000/register", state, config);
-      
+      const { msg } = await axios.post(
+        "http://127.0.0.1:5000/register",
+        state,
+        config
+      );
+
       // State reset
       setState({
-        firstName: "", lastName: "", phoneNumber: "", email: "", address: "", zip: "", city: "", rState: "", country: "",
+        firstName: "",
+        lastName: "",
+        phoneNumber: "",
+        email: "",
+        address: "",
+        zip: "",
+        city: "",
+        rState: "",
+        country: "",
       });
 
       setLoading(false);
 
       // Showing the success message
       return toast.success("User Registered successfully");
-    
     } catch (error) {
-
       setLoading(false);
 
       // Showing the error message
       return toast.error("User Not Registered");
-    
     }
-
   };
 
   return (
@@ -259,7 +270,34 @@ function Register() {
           />
         </div>
         <div className="group">
-          <input type="submit" className="btn btn-block" value={loading?".....":"Register"} />
+          <div className="dropDown_container">
+            <div className="dropDown_inner_container">
+              <h3>Choose a Storage Medium : </h3>
+              <select
+                className="dropDown_style"
+                value={medium}
+                onChange={handleDropDown}
+              >
+                <option className="dropDown_option_style" value="NaN">
+                  NaN
+                </option>
+                <option className="dropDown_option_style" value="Database">
+                  Database
+                </option>
+                <option className="dropDown_option_style" value="Local File">
+                  Local File
+                </option>
+              </select>
+            </div>
+            <h2>{`You selected ${medium}`}</h2>
+          </div>
+        </div>
+        <div className="group">
+          <input
+            type="submit"
+            className="btn btn-block"
+            value={loading ? "....." : "Register"}
+          />
         </div>
       </form>
     </div>
