@@ -1,13 +1,16 @@
 const User = require("../models/User");
 
 
-// user registration /register
+// User registration /register
 module.exports.register = async (req, res)=>{
 
-    const {firstName, lastName, phoneNumber, email, address, zip, city, state, country} = req.body;
+
+    // Destructing data from request
+    const {firstName, lastName, phoneNumber, email, address, zip, city, rState, country} = req.body;
 
     try{
 
+        // Storing data to cloud
         const user = await User.create({
             firstName,
             lastName,
@@ -16,7 +19,7 @@ module.exports.register = async (req, res)=>{
             address,
             zip,
             city,
-            state,
+            state:rState,
             country
         });
 
