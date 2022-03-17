@@ -5,8 +5,11 @@ import toast, { Toaster } from "react-hot-toast";
 function Register() {
   // State for Register loading
   const [loading, setLoading] = useState(false);
+
+  // State for Storage medium
   const [medium, setMedium] = useState("NaN");
 
+  // State for Register form
   const [state, setState] = useState({
     firstName: "",
     lastName: "",
@@ -19,6 +22,7 @@ function Register() {
     country: "",
   });
 
+  // function to handle input change
   const handleInputs = (event) => {
     const { name, value } = event.target;
     setState((preVal) => {
@@ -29,6 +33,7 @@ function Register() {
     });
   };
 
+  // function to handle drop down change
   const handleDropDown = (event) => {
     setMedium(event.target.value);
   };
@@ -71,56 +76,56 @@ function Register() {
     var lastNameRegex = /^[a-zA-Z\s]{2,}$/;
     var emailRegex = /\S+@\S+\.\S+/;
     var phoneRegex = /(0|91)?[6-9][0-9]{9}/;
-    var addressRegex = /^[a-zA-Z0-9\s,'-]{3,30}$/;
+    var addressRegex = /^[a-zA-Z0-9\s,.'-]{3,}$/;
     var zipRegex = /^[0-9]{6}$/;
     var cityStateCountryRegex = /^[a-zA-Z\s]{2,30}$/;
 
-    // Error array for storing all the errors
-    var inputErrors = [];
+    // Error array for storing all the validation errors
+    var validationErrors = [];
 
     // Check if the first name is valid
     if (!firstNameRegex.test(firstName)) {
-      inputErrors.push("First Name is invalid");
+      validationErrors.push("First Name is invalid");
     }
     // Check if the last name is valid
     if (!lastNameRegex.test(lastName)) {
-      inputErrors.push("Last Name is invalid");
+      validationErrors.push("Last Name is invalid");
     }
     // Check if the phone number is valid
     if (!emailRegex.test(email)) {
-      inputErrors.push("Email is invalid");
+      validationErrors.push("Email is invalid");
     }
     // Check if the phone number is valid
     if (!phoneRegex.test(phoneNumber)) {
-      inputErrors.push("Phone Number is invalid");
+      validationErrors.push("Phone Number is invalid");
     }
     // Check if the address is valid
     if (!addressRegex.test(address)) {
-      inputErrors.push("Address is invalid");
+      validationErrors.push("Address is invalid");
     }
     // Check if the zip is valid
     if (!zipRegex.test(zip)) {
-      inputErrors.push("ZIP is invalid");
+      validationErrors.push("ZIP is invalid");
     }
     // Check if the city is valid
     if (!cityStateCountryRegex.test(city)) {
-      inputErrors.push("City is invalid");
+      validationErrors.push("City is invalid");
     }
     // Check if the state is valid
     if (!cityStateCountryRegex.test(rState)) {
-      inputErrors.push("State is invalid");
+      validationErrors.push("State is invalid");
     }
     // Check if the country is valid
     if (!cityStateCountryRegex.test(country)) {
-      inputErrors.push("Country is invalid");
+      validationErrors.push("Country is invalid");
     }
 
     // If there are any errors, show the error message
-    if (inputErrors.length > 0) {
-      inputErrors.map((error) => {
+    if (validationErrors.length > 0) {
+      validationErrors.map((error) => {
         toast.error(error);
       });
-      inputErrors = [];
+      validationErrors = [];
       setLoading(false);
       return;
     }
@@ -133,7 +138,7 @@ function Register() {
       };
 
       // Sending the data to the server
-      const { msg } = await axios.post(
+      const {data:{msg}} = await axios.post(
         "http://127.0.0.1:5000/register",
         state,
         config
@@ -154,8 +159,14 @@ function Register() {
 
       setLoading(false);
 
+
+      // Check if user exist and show the User already exist message
+      if(msg==="User already exists"){
+        return toast.error(msg);
+      }
+
       // Showing the success message
-      return toast.success("User Registered successfully");
+      return toast.success(msg);
     } catch (error) {
       setLoading(false);
 

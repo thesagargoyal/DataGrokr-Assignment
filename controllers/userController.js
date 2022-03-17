@@ -10,6 +10,12 @@ module.exports.register = async (req, res)=>{
 
     try{
 
+        // Check if user already exists
+        const checkUser = await User.findOne({email});
+        if(checkUser){
+            return res.status(200).json({msg: "User already exists"});
+        }
+
         // Storing data to cloud
         const user = await User.create({
             firstName,
