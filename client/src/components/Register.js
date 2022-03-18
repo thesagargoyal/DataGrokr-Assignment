@@ -7,20 +7,16 @@ function Register() {
   const [loading, setLoading] = useState(false);
 
   // State for Storage medium
-  const [medium, setMedium] = useState("NaN");
+  const [medium, setMedium] = useState("Not Selected");
 
   // State for Register form
-  const [state, setState] = useState({
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    email: "",
-    address: "",
-    zip: "",
-    city: "",
-    rState: "",
-    country: "",
-  });
+  const [state, setState] = useState({ firstName: "", lastName: "", phoneNumber: "", email: "", address: "", zip: "", city: "", rState: "", country: "",});
+
+  // Function to reset state
+  const resetState = () => {
+    setState({ firstName: "", lastName: "", phoneNumber: "", email: "", address: "", zip: "", city: "", rState: "", country: ""});
+    setMedium("Not Selected");
+  }
 
   // function to handle input change
   const handleInputs = (event) => {
@@ -43,30 +39,10 @@ function Register() {
 
     setLoading(true);
 
-    const {
-      firstName,
-      lastName,
-      phoneNumber,
-      email,
-      address,
-      zip,
-      city,
-      rState,
-      country,
-    } = state;
+    const { firstName, lastName, phoneNumber, email, address, zip, city, rState, country} = state;
 
     // check if any field is empty
-    if (
-      !firstName ||
-      !lastName ||
-      !phoneNumber ||
-      !email ||
-      !address ||
-      !zip ||
-      !city ||
-      !rState ||
-      !country
-    ) {
+    if (!firstName ||!phoneNumber ||!lastName ||!email ||!address ||!zip ||!city ||!rState ||!country ||medium === "Not Selected") {
       setLoading(false);
       return toast.error("Please enter all required fields");
     }
@@ -119,7 +95,7 @@ function Register() {
     if (!cityStateCountryRegex.test(country)) {
       validationErrors.push("Country is invalid");
     }
-
+    
     // If there are any errors, show the error message
     if (validationErrors.length > 0) {
       validationErrors.map((error) => {
@@ -130,6 +106,17 @@ function Register() {
       return;
     }
 
+    //If medium is local Storage, then store the data in local storage
+    if (medium === "Local File") {
+      // Save file in local storage
+      SaveFile();
+      setLoading(false);
+      // State reset
+      resetState();
+      return;
+    }
+
+    // If there are no errors, send the data to the server
     try {
       const config = {
         headers: {
@@ -145,17 +132,7 @@ function Register() {
       );
 
       // State reset
-      setState({
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-        email: "",
-        address: "",
-        zip: "",
-        city: "",
-        rState: "",
-        country: "",
-      });
+      resetState();
 
       setLoading(false);
 
@@ -169,11 +146,43 @@ function Register() {
       return toast.success(msg);
     } catch (error) {
       setLoading(false);
-
       // Showing the error message
       return toast.error("User Not Registered");
     }
   };
+
+  const SaveFile = () => {
+    
+    // This variable stores all the data.
+    let data = 
+        '\r First Name: ' + state.firstName + ' \r\n ' +
+        'Last Name: ' +state.lastName + ' \r\n ' +
+        'Phone Number: ' +state.phoneNumber + ' \r\n ' +
+        'Email: ' +state.email + ' \r\n ' +
+        'Address: ' +state.address + ' \r\n ' +
+        'ZIP: ' +state.zip + ' \r\n ' +
+        'City: ' +state.city + ' \r\n ' +
+        'State: ' +state.rState + ' \r\n ' +
+        'Country: ' +state.country + ' \r\n ';
+    
+    // Convert the text to BLOB.
+    const textToBLOB = new Blob([data], { type: 'text/plain' });
+    const sFileName = `${state.email}.txt`;	   // The file to save the data.
+
+    let newLink = document.createElement("a");
+    newLink.download = sFileName;
+
+    if (window.webkitURL != null) {
+        newLink.href = window.webkitURL.createObjectURL(textToBLOB);
+    }
+    else {
+        newLink.href = window.URL.createObjectURL(textToBLOB);
+        newLink.style.display = "none";
+        document.body.appendChild(newLink);
+    }
+
+    newLink.click(); 
+}
 
   return (
     <div className="body_container">
@@ -289,8 +298,8 @@ function Register() {
                 value={medium}
                 onChange={handleDropDown}
               >
-                <option className="dropDown_option_style" value="NaN">
-                  NaN
+                <option className="dropDown_option_style" value="Not Selected">
+                  Not Selected
                 </option>
                 <option className="dropDown_option_style" value="Database">
                   Database
