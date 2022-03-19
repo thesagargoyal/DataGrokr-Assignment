@@ -34,10 +34,6 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    country: {
-        type: String,
-        required: true
-    },
 }, {timestamps: true});
 
 module.exports = model("users", userSchema);

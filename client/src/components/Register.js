@@ -10,11 +10,11 @@ function Register() {
   const [medium, setMedium] = useState("Not Selected");
 
   // State for Register form
-  const [state, setState] = useState({ firstName: "", lastName: "", phoneNumber: "", email: "", address: "", zip: "", city: "", rState: "", country: "",});
+  const [state, setState] = useState({ firstName: "", lastName: "", phoneNumber: "", email: "", address: "", zip: "", city: "", rState: ""});
 
   // Function to reset state
   const resetState = () => {
-    setState({ firstName: "", lastName: "", phoneNumber: "", email: "", address: "", zip: "", city: "", rState: "", country: ""});
+    setState({ firstName: "", lastName: "", phoneNumber: "", email: "", address: "", zip: "", city: "", rState: ""});
     setMedium("Not Selected");
   }
 
@@ -39,10 +39,10 @@ function Register() {
 
     setLoading(true);
 
-    const { firstName, lastName, phoneNumber, email, address, zip, city, rState, country} = state;
+    const { firstName, lastName, phoneNumber, email, address, zip, city, rState} = state;
 
     // check if any field is empty
-    if (!firstName ||!phoneNumber ||!lastName ||!email ||!address ||!zip ||!city ||!rState ||!country ||medium === "Not Selected") {
+    if (!firstName ||!phoneNumber ||!lastName ||!email ||!address ||!zip ||!city ||!rState ||medium === "Not Selected") {
       setLoading(false);
       return toast.error("Please enter all required fields");
     }
@@ -51,10 +51,10 @@ function Register() {
     var firstNameRegex = /^[A-Za-z. ]{3,30}$/;
     var lastNameRegex = /^[a-zA-Z\s]{2,}$/;
     var emailRegex = /\S+@\S+\.\S+/;
-    var phoneRegex = /(0|91)?[6-9][0-9]{9}/;
+    var phoneRegex = /(0|91)?[7-9][0-9]{9}/;
     var addressRegex = /^[a-zA-Z0-9\s,.'-]{3,}$/;
-    var zipRegex = /^[0-9]{6}$/;
-    var cityStateCountryRegex = /^[a-zA-Z\s]{2,30}$/;
+    var zipRegex = /^[1-9]{1}[0-9]{2}[ ]?[0-9]{3}$/;
+    var cityStateRegex = /^[a-zA-Z\s]{2,30}$/;
 
     // Error array for storing all the validation errors
     var validationErrors = [];
@@ -84,18 +84,14 @@ function Register() {
       validationErrors.push("ZIP is invalid");
     }
     // Check if the city is valid
-    if (!cityStateCountryRegex.test(city)) {
+    if (!cityStateRegex.test(city)) {
       validationErrors.push("City is invalid");
     }
     // Check if the state is valid
-    if (!cityStateCountryRegex.test(rState)) {
+    if (!cityStateRegex.test(rState)) {
       validationErrors.push("State is invalid");
     }
-    // Check if the country is valid
-    if (!cityStateCountryRegex.test(country)) {
-      validationErrors.push("Country is invalid");
-    }
-    
+
     // If there are any errors, show the error message
     if (validationErrors.length > 0) {
       validationErrors.map((error) => {
@@ -162,8 +158,7 @@ function Register() {
         'Address: ' +state.address + ' \r\n ' +
         'ZIP: ' +state.zip + ' \r\n ' +
         'City: ' +state.city + ' \r\n ' +
-        'State: ' +state.rState + ' \r\n ' +
-        'Country: ' +state.country + ' \r\n ';
+        'State: ' +state.rState + ' \r\n ';
     
     // Convert the text to BLOB.
     const textToBLOB = new Blob([data], { type: 'text/plain' });
@@ -200,104 +195,34 @@ function Register() {
           <h1>User Registration</h1>
         </div>
         <div className="group">
-          <input
-            type="text"
-            name="firstName"
-            className="group__control"
-            placeholder="Enter First Name"
-            value={state.firstName}
-            onChange={handleInputs}
-          />
+          <input type="text" name="firstName" className="group__control" placeholder="Enter First Name" value={state.firstName} onChange={handleInputs} />
         </div>
         <div className="group">
-          <input
-            type="text"
-            name="lastName"
-            className="group__control"
-            placeholder="Enter Last Name"
-            value={state.lastName}
-            onChange={handleInputs}
-          />
+          <input type="text" name="lastName" className="group__control" placeholder="Enter Last Name" value={state.lastName} onChange={handleInputs} />
         </div>
         <div className="group">
-          <input
-            type="text"
-            name="phoneNumber"
-            className="group__control"
-            placeholder="Enter Phone Number"
-            value={state.phoneNumber}
-            onChange={handleInputs}
-          />
+          <input type="text" name="phoneNumber" className="group__control" placeholder="Enter Phone Number" value={state.phoneNumber} onChange={handleInputs} />
         </div>
         <div className="group">
-          <input
-            type="text"
-            name="email"
-            className="group__control"
-            placeholder="Enter Email"
-            value={state.email}
-            onChange={handleInputs}
-          />
+          <input type="text" name="email" className="group__control" placeholder="Enter Email" value={state.email} onChange={handleInputs} />
         </div>
         <div className="group">
-          <input
-            type="text"
-            name="address"
-            className="group__control"
-            placeholder="Enter Address"
-            value={state.address}
-            onChange={handleInputs}
-          />
+          <input type="text" name="address" className="group__control" placeholder="Enter Address" value={state.address} onChange={handleInputs} />
         </div>
         <div className="group">
-          <input
-            type="text"
-            name="zip"
-            className="group__control"
-            placeholder="Enter ZIP Code"
-            value={state.zip}
-            onChange={handleInputs}
-          />
+          <input type="text" name="zip" className="group__control" placeholder="Enter ZIP Code" value={state.zip} onChange={handleInputs} />
         </div>
         <div className="group">
-          <input
-            type="text"
-            name="city"
-            className="group__control"
-            placeholder="Enter City"
-            value={state.city}
-            onChange={handleInputs}
-          />
+          <input type="text" name="city" className="group__control" placeholder="Enter City" value={state.city} onChange={handleInputs} />
         </div>
         <div className="group">
-          <input
-            type="text"
-            name="rState"
-            className="group__control"
-            placeholder="Enter State"
-            value={state.rState}
-            onChange={handleInputs}
-          />
-        </div>
-        <div className="group">
-          <input
-            type="text"
-            name="country"
-            className="group__control"
-            placeholder="Enter Country"
-            value={state.country}
-            onChange={handleInputs}
-          />
+          <input type="text" name="rState" className="group__control" placeholder="Enter State" value={state.rState} onChange={handleInputs} />
         </div>
         <div className="group">
           <div className="dropDown_container">
             <div className="dropDown_inner_container">
               <h3>Choose a Storage Medium : </h3>
-              <select
-                className="dropDown_style"
-                value={medium}
-                onChange={handleDropDown}
-              >
+              <select className="dropDown_style" value={medium} onChange={handleDropDown} >
                 <option className="dropDown_option_style" value="Not Selected">
                   Not Selected
                 </option>
@@ -313,11 +238,7 @@ function Register() {
           </div>
         </div>
         <div className="group">
-          <input
-            type="submit"
-            className="btn btn-block"
-            value={loading ? "....." : "Register"}
-          />
+          <input type="submit" className="btn btn-block" value={loading ? "....." : "Register"} />
         </div>
       </form>
     </div>
