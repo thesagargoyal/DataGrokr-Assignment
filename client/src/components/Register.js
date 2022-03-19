@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { saveAs } from 'file-saver';
 
 function Register() {
   // State for Register loading
@@ -109,7 +110,9 @@ function Register() {
       setLoading(false);
       // State reset
       resetState();
-      return;
+      // Show success message
+      return toast.success("User Registered Successfully");
+
     }
 
     // If there are no errors, send the data to the server
@@ -131,8 +134,7 @@ function Register() {
       resetState();
 
       setLoading(false);
-
-
+      
       // Check if user exist and show the User already exist message
       if(msg==="User already exists"){
         return toast.error(msg);
@@ -151,32 +153,19 @@ function Register() {
     
     // This variable stores all the data.
     let data = 
-        '\r First Name: ' + state.firstName + ' \r\n ' +
-        'Last Name: ' +state.lastName + ' \r\n ' +
-        'Phone Number: ' +state.phoneNumber + ' \r\n ' +
-        'Email: ' +state.email + ' \r\n ' +
-        'Address: ' +state.address + ' \r\n ' +
-        'ZIP: ' +state.zip + ' \r\n ' +
-        'City: ' +state.city + ' \r\n ' +
-        'State: ' +state.rState + ' \r\n ';
+        'First Name: ' + state.firstName + ' \n' +
+        'Last Name: ' +state.lastName + ' \n' +
+        'Phone Number: ' +state.phoneNumber + ' \n' +
+        'Email: ' +state.email + ' \n' +
+        'Address: ' +state.address + ' \n' +
+        'ZIP: ' +state.zip + ' \n' +
+        'City: ' +state.city + ' \n' +
+        'State: ' +state.rState + ' \n';
     
     // Convert the text to BLOB.
     const textToBLOB = new Blob([data], { type: 'text/plain' });
     const sFileName = `${state.email}.txt`;	   // The file to save the data.
-
-    let newLink = document.createElement("a");
-    newLink.download = sFileName;
-
-    if (window.webkitURL != null) {
-        newLink.href = window.webkitURL.createObjectURL(textToBLOB);
-    }
-    else {
-        newLink.href = window.URL.createObjectURL(textToBLOB);
-        newLink.style.display = "none";
-        document.body.appendChild(newLink);
-    }
-
-    newLink.click(); 
+    saveAs(textToBLOB, sFileName);
 }
 
   return (
@@ -244,5 +233,4 @@ function Register() {
     </div>
   );
 }
-
 export default Register;
