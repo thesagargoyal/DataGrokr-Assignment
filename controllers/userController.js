@@ -6,7 +6,7 @@ module.exports.register = async (req, res)=>{
 
 
     // Destructing data from request
-    const {firstName, lastName, phoneNumber, email, address, zip, city, rState, country} = req.body;
+    const {firstName, lastName, phoneNumber, email, address, zip, city, rState} = req.body;
 
     try{
 
@@ -26,7 +26,6 @@ module.exports.register = async (req, res)=>{
             zip,
             city,
             state:rState,
-            country
         });
 
         return res.status(200).json({msg: "User Registered Successfully"});
