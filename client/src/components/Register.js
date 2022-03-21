@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { saveAs } from 'file-saver';
 
 function Register() {
   // State for Register loading
@@ -36,8 +35,11 @@ function Register() {
   };
 
   const userRegister = async (e) => {
+
+    // Prevent default action
     e.preventDefault();
 
+    // Setting loading state to true
     setLoading(true);
 
     const { firstName, lastName, phoneNumber, email, address, zip, city, rState} = state;
@@ -98,6 +100,7 @@ function Register() {
       validationErrors.map((error) => {
         toast.error(error);
       });
+      // State Reset
       validationErrors = [];
       setLoading(false);
       return;
@@ -105,11 +108,22 @@ function Register() {
 
     //If medium is local Storage, then store the data in local storage
     if (medium === "Local File") {
-      // Save file in local storage
-      SaveFile();
-      setLoading(false);
+      
+      // Check if the users data is already present in local storage
+      if(localStorage.getItem("users")==null){
+        localStorage.setItem("users", JSON.stringify([]));
+      }
+      // Fetching users data from local storage
+      var users = JSON.parse(localStorage.getItem("users"));
+      // Push the data to users array
+      users.push(state);
+      // Update the local storage
+      localStorage.setItem("users", JSON.stringify(users));
+
       // State reset
       resetState();
+      setLoading(false);
+
       // Show success message
       return toast.success("User Registered Successfully");
 
@@ -117,6 +131,8 @@ function Register() {
 
     // If there are no errors, send the data to the server
     try {
+
+      //Config for sending data to backend
       const config = {
         headers: {
           "Content-Type": "Application/json",
@@ -132,13 +148,7 @@ function Register() {
 
       // State reset
       resetState();
-
       setLoading(false);
-      
-      // Check if user exist and show the User already exist message
-      if(msg==="User already exists"){
-        return toast.error(msg);
-      }
 
       // Showing the success message
       return toast.success(msg);
@@ -148,25 +158,6 @@ function Register() {
       return toast.error("User Not Registered");
     }
   };
-
-  const SaveFile = () => {
-    
-    // This variable stores all the data.
-    let data = 
-        'First Name: ' + state.firstName + ' \n' +
-        'Last Name: ' +state.lastName + ' \n' +
-        'Phone Number: ' +state.phoneNumber + ' \n' +
-        'Email: ' +state.email + ' \n' +
-        'Address: ' +state.address + ' \n' +
-        'ZIP: ' +state.zip + ' \n' +
-        'City: ' +state.city + ' \n' +
-        'State: ' +state.rState + ' \n';
-    
-    // Convert the text to BLOB.
-    const textToBLOB = new Blob([data], { type: 'text/plain' });
-    const sFileName = `${state.email}.txt`;	   // The file to save the data.
-    saveAs(textToBLOB, sFileName);
-}
 
   return (
     <div className="body_container">
